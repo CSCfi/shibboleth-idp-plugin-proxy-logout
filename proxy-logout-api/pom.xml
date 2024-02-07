@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- See LICENSE.txt file in the root directory of this repository for the 
+    copyright/license information. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>fi.csc.shibboleth.plugin.proxy.logout</groupId>
+    <artifactId>idp-plugin-proxy-logout</artifactId>
+    <version>0.9.0</version>
+  </parent>
+  <name>Shibboleth IdP :: Plugins :: Proxy Logout API</name>
+  <description>OAuth 2.0 Device Authorization Grant plugin API.</description>
+  <artifactId>proxy-logout-api</artifactId>
+  <packaging>jar</packaging>
+  <properties>
+    <checkstyle.configLocation>${project.basedir}/../checkstyle.xml</checkstyle.configLocation>
+    <automatic.module.name>fi.csc.shibboleth.plugin.oauth2.devicegrant.api</automatic.module.name>
+  </properties>
+  <dependencies>
+    <!-- provided dependencies -->
+    <!-- test dependencies -->
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.target.directory}</outputDirectory>
+              <includeScope>runtime</includeScope>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestSections>
+              <manifestSection>
+                <name>fi/csc/shibboleth/plugin/proxylogout/</name>
+                <manifestEntries>
+                  <Implementation-Title>${project.artifactId}</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>csc.fi</Implementation-Vendor>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
