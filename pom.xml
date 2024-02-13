@@ -66,6 +66,18 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
+        <groupId>${idp.groupId}</groupId>
+        <artifactId>idp-session-api</artifactId>
+        <version>${idp.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>${idp.groupId}</groupId>
+        <artifactId>idp-saml-api</artifactId>
+        <version>${idp.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>jakarta.servlet</groupId>
         <artifactId>jakarta.servlet-api</artifactId>
         <version>6.0.0</version>
