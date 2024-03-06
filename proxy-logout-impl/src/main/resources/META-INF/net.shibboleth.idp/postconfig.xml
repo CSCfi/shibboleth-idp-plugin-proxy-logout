@@ -16,4 +16,7 @@
         class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"
         p:placeholderPrefix="%{" p:placeholderSuffix="}" />
 
+    <!-- Interceptor bean definition. -->
+    <bean id="intercept/track-idp" parent="shibboleth.InterceptFlow" />
+
 </beans>
