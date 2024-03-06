@@ -36,6 +36,8 @@ import net.shibboleth.shared.logic.Constraint;
  * {@link NameIDPrincipal}.
  * </p>
  */
+
+//TODO: Should check that IdP has also SP role and logout - end point, otherwise logout and propagation will not work
 public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<ProfileRequestContext, SPSession> {
 
     /** Class logger. */
