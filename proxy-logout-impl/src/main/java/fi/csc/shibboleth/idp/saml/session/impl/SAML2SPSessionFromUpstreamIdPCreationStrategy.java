@@ -81,11 +81,9 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
             log.debug("No NameIDPrincipal in SubjectContext, no SAML2SPSession created");
             return null;
         }
-        // TODO: We read session id from sp provided id field. Very suspicious hack. Fix
-        // it.
         String sessionIndex = nameID.getSPProvidedID();
         if (sessionIndex == null) {
-            log.debug("No session index avalaible, no SAML2SPSession created");
+            log.debug("No session index avalaible, no SAML2SPSession created for upstream IdP.");
             return null;
         }
         // We clear it before creating a SP Session.

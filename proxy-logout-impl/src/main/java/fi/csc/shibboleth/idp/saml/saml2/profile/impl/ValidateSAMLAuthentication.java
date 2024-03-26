@@ -33,6 +33,8 @@ import org.opensaml.messaging.context.navigate.RecursiveTypedParentContextLookup
 import org.opensaml.profile.action.ActionSupport;
 import org.opensaml.profile.action.EventIds;
 import org.opensaml.profile.context.ProfileRequestContext;
+import org.opensaml.saml.common.messaging.context.SAMLMetadataContext;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.metadata.resolver.MetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Attribute;
@@ -48,6 +50,7 @@ import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.ProxyRestriction;
 import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
@@ -176,6 +179,9 @@ public class ValidateSAMLAuthentication extends AbstractValidationAction {
     /** Context for externally supplied inbound attributes. */
     @Nullable
     private AttributeContext attributeContext;
+    
+    /** Whether the upstream IdP supports logout .*/
+    private boolean logOutSupported;
 
     /** Constructor. */
     public ValidateSAMLAuthentication() {
@@ -287,6 +293,16 @@ public class ValidateSAMLAuthentication extends AbstractValidationAction {
             ActionSupport.buildEvent(profileRequestContext, IdPEventIds.INVALID_PROFILE_CONFIG);
             return false;
         }
+ 
+        // Check whether the upstream IdP supports logout.
+        final BaseContext rpIdCtxTree = rpContext.getRelyingPartyIdContextTree();
+        if (rpIdCtxTree  instanceof SAMLPeerEntityContext) {
+            final SAMLMetadataContext mdCtx =
+                    rpIdCtxTree.getSubcontext(SAMLMetadataContext.class);
+            if (mdCtx.getRoleDescriptor() instanceof IDPSSODescriptor && !((IDPSSODescriptor)mdCtx.getRoleDescriptor()).getSingleLogoutServices().isEmpty()) {
+                logOutSupported = true;
+            }
+        }
 
         profileConfiguration = (BrowserSSOProfileConfiguration) rpContext.getProfileConfig();
 
@@ -383,8 +399,8 @@ public class ValidateSAMLAuthentication extends AbstractValidationAction {
         final org.opensaml.saml.saml2.core.Subject samlSubject = localSamlAuthnContext.getSubject();
         final NameID nameID = samlSubject == null ? null : samlSubject.getNameID();
         if (nameID != null) {
-            // TODO: We set session id to sp provided id field. Very suspicious hack. Fix it.
-            nameID.setSPProvidedID(localSamlAuthnContext.getAuthnStatement().getSessionIndex());
+            // We set session id to 'SP provided id field' for IdP-Tracker.  We set it to null if logout is not supported.
+            nameID.setSPProvidedID(logOutSupported ? localSamlAuthnContext.getAuthnStatement().getSessionIndex() : null);
             subject.getPrincipals().add(new NameIDPrincipal(nameID));
         }
         final AuthnStatement authnStatement = localSamlAuthnContext.getAuthnStatement();
