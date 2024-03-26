@@ -90,8 +90,7 @@
     </action-state>
 
     <view-state id="LogoutView" view="logout">
-    	<attribute name="csrf_excluded" value="true" type="boolean"/>
-        <on-render>
+    	<on-render>
             <evaluate expression="environment" result="viewScope.environment" />
             <evaluate expression="opensamlProfileRequestContext" result="viewScope.profileRequestContext" />
             <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="viewScope.logoutContext" />
@@ -119,7 +118,6 @@
     <!-- Terminus -->
 
     <view-state id="LogoutPropagateView" view="logout-propagate">
-        <attribute name="csrf_excluded" value="true" type="boolean"/>
         <on-entry>
             <evaluate expression="WriteAuditLog" />
             <evaluate expression="SaveLogoutContext" />
@@ -139,7 +137,6 @@
     </view-state>
 
     <view-state id="LogoutCompleteView" view="logout-complete">
-        <attribute name="csrf_excluded" value="true" type="boolean"/>
         <on-entry>
             <evaluate expression="WriteAuditLog" />
             <evaluate expression="environment" result="requestScope.environment" />
