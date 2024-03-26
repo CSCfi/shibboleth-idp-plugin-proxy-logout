@@ -81,7 +81,6 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
             log.debug("No NameIDPrincipal in SubjectContext, no SAML2SPSession created");
             return null;
         }
-        // Not having session index indicates upstream IdP does not support logout.
         String sessionIndex = nameID.getSPProvidedID();
         if (sessionIndex == null) {
             log.debug("No session index avalaible, no SAML2SPSession created for upstream IdP.");
