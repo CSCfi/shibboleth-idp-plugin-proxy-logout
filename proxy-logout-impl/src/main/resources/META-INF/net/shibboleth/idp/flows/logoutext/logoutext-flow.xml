@@ -90,7 +90,8 @@
     </action-state>
 
     <view-state id="LogoutView" view="logout">
-    	<on-render>
+        <attribute name="csrf_excluded" value="true" type="boolean"/>
+        <on-render>
             <evaluate expression="environment" result="viewScope.environment" />
             <evaluate expression="opensamlProfileRequestContext" result="viewScope.profileRequestContext" />
             <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="viewScope.logoutContext" />
@@ -100,7 +101,8 @@
             <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="viewScope.response" />
             <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="viewScope.custom" />
         </on-render>
-        <transition on="proceed" to="LogoutCompleteView" />
+        
+        <transition on="proceed" to="CheckAsync" />
         <transition on="local" to="DestroySessions">
             <set name="flowScope.transitionAfterDestroy" value="'LogoutCompleteView'" />
         </transition>
@@ -109,45 +111,45 @@
         </transition>
         <transition on="end" to="LogoutCompleteView" />
     </view-state>
-
+    
     <decision-state id="CheckPromptCondition2">
         <if test="promptForIdP"
             then="DestroySessions" else="#{transitionAfterDestroy}" />
     </decision-state>
-
-    <!-- Terminus -->
-
-    <view-state id="LogoutPropagateView" view="logout-propagate">
-        <on-entry>
-            <evaluate expression="WriteAuditLog" />
+    
+    <view-state id="LogoutPropagateView" view="logoutext-propagate">
+        <attribute name="csrf_excluded" value="true" type="boolean"/>
+        <on-render>
             <evaluate expression="SaveLogoutContext" />
-            <evaluate expression="environment" result="requestScope.environment" />
-            <evaluate expression="opensamlProfileRequestContext" result="requestScope.profileRequestContext" />
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="requestScope.logoutContext" />
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.profile.context.MultiRelyingPartyContext))" result="requestScope.multiRPContext" />
-            <evaluate expression="T(net.shibboleth.shared.codec.HTMLEncoder)" result="requestScope.htmlEncoder" />
-            <evaluate expression="T(java.net.URLEncoder)" result="requestScope.urlEncoder" />
-            <evaluate expression="T(org.cryptacular.util.CodecUtil)" result="requestScope.codecUtil" />
-            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="requestScope.request" />
-            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="requestScope.response" />
-            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.LogoutPropagationFlowSelector')" result="requestScope.flowSelector" />
-            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="requestScope.custom" />
-        </on-entry>
+            <evaluate expression="environment" result="viewScope.environment" />
+            <evaluate expression="opensamlProfileRequestContext" result="viewScope.profileRequestContext" />
+            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="viewScope.logoutContext" />
+            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.profile.context.MultiRelyingPartyContext))" result="viewScope.multiRPContext" />
+            <evaluate expression="T(net.shibboleth.shared.codec.HTMLEncoder)" result="viewScope.htmlEncoder" />
+            <evaluate expression="T(java.net.URLEncoder)" result="viewScope.urlEncoder" />
+            <evaluate expression="T(org.cryptacular.util.CodecUtil)" result="viewScope.codecUtil" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="viewScope.request" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="viewScope.response" />
+            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.LogoutPropagationFlowSelector')" result="viewScope.flowSelector" />
+            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="viewScope.custom" />
+        </on-render>
+        
         <transition on="proceed" to="BuildRequest" />
     </view-state>
 
     <view-state id="LogoutCompleteView" view="logout-complete">
-        <on-entry>
-            <evaluate expression="WriteAuditLog" />
-            <evaluate expression="environment" result="requestScope.environment" />
-            <evaluate expression="opensamlProfileRequestContext" result="requestScope.profileRequestContext" />
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="requestScope.logoutContext" />
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.profile.context.MultiRelyingPartyContext))" result="requestScope.multiRPContext" />
-            <evaluate expression="T(net.shibboleth.shared.codec.HTMLEncoder)" result="requestScope.encoder" />
-            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="requestScope.request" />
-            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="requestScope.response" />
-            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="requestScope.custom" />
-        </on-entry>
+        <attribute name="csrf_excluded" value="true" type="boolean"/>
+        <on-render>
+            <evaluate expression="environment" result="viewScope.environment" />
+            <evaluate expression="opensamlProfileRequestContext" result="viewScope.profileRequestContext" />
+            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.session.context.LogoutContext))" result="viewScope.logoutContext" />
+            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.profile.context.MultiRelyingPartyContext))" result="viewScope.multiRPContext" />
+            <evaluate expression="T(net.shibboleth.shared.codec.HTMLEncoder)" result="viewScope.encoder" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeRequest()" result="viewScope.request" />
+            <evaluate expression="flowRequestContext.getExternalContext().getNativeResponse()" result="viewScope.response" />
+            <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.CustomViewContext') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.CustomViewContext') : null" result="viewScope.custom" />
+        </on-render>
+
         <transition on="proceed" to="BuildRequest" />
     </view-state>
     
@@ -160,7 +162,7 @@
         <transition on="proceed" to="LogoutUpstream" />
     </action-state>
     
-    <end-state id="LogoutUpstream" view="externalRedirect:#{flowRequestContext.getExternalContext().getNativeRequest().getContextPath()}/../PropagateLogout?SessionKey=#{flowRequestContext.getFlowScope().get('entryKey')}"/>
+    <end-state id="LogoutUpstream" view="externalRedirect:#{flowRequestContext.getExternalContext().getNativeRequest().getContextPath()}/../logout-propagationext?SessionKey=#{flowRequestContext.getFlowScope().get('entryKey')}"/>
     
 
     <!-- Passthrough state if an exception is thrown. -->
