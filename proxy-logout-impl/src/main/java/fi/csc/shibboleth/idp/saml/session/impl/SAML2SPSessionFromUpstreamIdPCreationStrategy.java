@@ -37,12 +37,13 @@ import net.shibboleth.shared.logic.Constraint;
  * </p>
  */
 
-//TODO: Should check that IdP has also SP role and logout - end point, otherwise logout and propagation will not work
 public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<ProfileRequestContext, SPSession> {
 
     /** Class logger. */
     @Nonnull
     private final Logger log = LoggerFactory.getLogger(SAML2SPSessionFromUpstreamIdPCreationStrategy.class);
+    
+    public final static String ACS = "https://SAML2SPSessionFromUpstreamIdPCreationStrategy.acs";
 
     /** Lifetime of sessions to create. */
     @Nonnull
@@ -89,6 +90,6 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
         // We clear it before creating a SP Session.
         nameID.setSPProvidedID(null);
         return new SAML2SPSession(nameID.getNameQualifier(), Instant.now(), Instant.now().plus(sessionLifetime), nameID,
-                sessionIndex, null, true);
+                sessionIndex, ACS, true);
     }
 }
