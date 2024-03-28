@@ -5,24 +5,14 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
-       default-init-method="initialize"
-       default-destroy-method="destroy">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd"
+       default-init-method="initialize" default-destroy-method="destroy">
 
-    <bean id="ValidateSAMLAuthenticationExt"
-        class="fi.csc.shibboleth.idp.saml.saml2.profile.impl.ValidateSAMLAuthentication" scope="prototype"
-        p:authenticationContextLookupStrategy-ref="ParentAuthenticiationContextLookup"
-        p:profileContextLookupStrategy-ref="shibboleth.ChildLookup.ProxyProfileRequestContext"
-        p:responderLookupStrategy-ref="shibboleth.RelyingPartyIdLookup.Simple"
-        p:requesterLookupStrategy-ref="shibboleth.IssuerLookup.Simple"
-        p:transcoderRegistry-ref="shibboleth.AttributeRegistryService"
-        p:attributeFilter-ref="shibboleth.AttributeFilterService"
-        p:metadataResolver-ref="shibboleth.MetadataResolver"
-        p:addDefaultPrincipals="#{getObject('shibboleth.authn.SAML.addDefaultPrincipals') ?: %{idp.authn.SAML.addDefaultPrincipals:false}}"
-        p:resultCachingPredicate="#{getObject('shibboleth.authn.SAML.resultCachingPredicate')}"        
-        p:attributeExtractionStrategy="#{getObject('shibboleth.authn.SAML.attributeExtractionStrategy')}"
-        p:loggedAttributeId="%{idp.authn.SAML.loggedAttributeId:}" />
-    
+  <bean id="ValidateSAMLAuthenticationExt" class="fi.csc.shibboleth.idp.saml.saml2.profile.impl.ValidateSAMLAuthentication" scope="prototype" p:authenticationContextLookupStrategy-ref="ParentAuthenticiationContextLookup" p:profileContextLookupStrategy-ref="shibboleth.ChildLookup.ProxyProfileRequestContext" p:responderLookupStrategy-ref="shibboleth.RelyingPartyIdLookup.Simple" p:requesterLookupStrategy-ref="shibboleth.IssuerLookup.Simple" p:transcoderRegistry-ref="shibboleth.AttributeRegistryService" p:attributeFilter-ref="shibboleth.AttributeFilterService" p:metadataResolver-ref="shibboleth.MetadataResolver" p:addDefaultPrincipals="#{getObject('shibboleth.authn.SAML.addDefaultPrincipals') ?: %{idp.authn.SAML.addDefaultPrincipals:false}}" p:resultCachingPredicate="#{getObject('shibboleth.authn.SAML.resultCachingPredicate')}" p:attributeExtractionStrategy="#{getObject('shibboleth.authn.SAML.attributeExtractionStrategy')}" p:loggedAttributeId="%{idp.authn.SAML.loggedAttributeId:}"/>
+
 </beans>

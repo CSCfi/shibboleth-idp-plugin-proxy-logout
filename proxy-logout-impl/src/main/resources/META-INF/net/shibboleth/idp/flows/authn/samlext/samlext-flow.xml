@@ -1,104 +1,93 @@
+<?xml version="1.0"?>
 <flow xmlns="http://www.springframework.org/schema/webflow"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow.xsd"
       parent="authn.abstract">
 
-    <!-- This is a login flow for proxied authentication implemented via SAML 2.0. -->
-    <!-- This flow replaces 'ValidateSAMLAuthentication' expression of shibboleth provided SAML 2.0 flow with expression 'ValidateSAMLAuthenticationExt'   -->
+  <!-- This is a login flow for proxied authentication implemented via SAML 2.0. -->
+  <!-- This flow replaces 'ValidateSAMLAuthentication' expression of shibboleth provided SAML 2.0 flow with expression 'ValidateSAMLAuthenticationExt'   -->
+  <on-start>
+    <!-- If installed, this can bypass discovery. -->
+    <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.authn.SAML.discoveryFunction') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.authn.SAML.discoveryFunction') : PropertyDrivenDiscovery" result="flowScope.customDiscovery"/>
+    <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).setAuthenticatingAuthority(customDiscovery.apply(opensamlProfileRequestContext))"/>
+  </on-start>
 
-    <on-start>
-        <!-- If installed, this can bypass discovery. -->
-        <evaluate expression="flowRequestContext.getActiveFlow().getApplicationContext().containsBean('shibboleth.authn.SAML.discoveryFunction') ? flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.authn.SAML.discoveryFunction') : PropertyDrivenDiscovery" result="flowScope.customDiscovery" />
-        <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).setAuthenticatingAuthority(customDiscovery.apply(opensamlProfileRequestContext))" />
-    </on-start>
+  <action-state id="Start">
+    <evaluate expression="'proceed'"/>
+    <transition on="proceed" to="DoDiscovery"/>
+  </action-state>
 
-    <action-state id="Start">
-        <evaluate expression="'proceed'" />
-        <transition on="proceed" to="DoDiscovery" />
-    </action-state>
+  <action-state id="PostDiscovery">
+    <evaluate expression="InitializeProxyProfileRequestContext"/>
+    <evaluate expression="FlowStartPopulateAuditContext"/>
+    <evaluate expression="PrepareInboundMessageContext"/>
+    <evaluate expression="SAMLProtocolAndRole"/>
+    <evaluate expression="SAMLMetadataLookup"/>
+    <evaluate expression="InitializeRelyingPartyContextFromSAMLPeer"/>
+    <evaluate expression="SelectRelyingPartyConfiguration"/>
+    <evaluate expression="PostLookupPopulateAuditContext"/>
+    <evaluate expression="SelectProfileConfiguration"/>
+    <evaluate expression="InitializeOutboundMessageContext"/>
+    <evaluate expression="InitializeMessageChannelSecurityContext"/>
+    <evaluate expression="PopulateBindingAndEndpointContexts"/>
+    <evaluate expression="PopulateRequestSignatureSigningParameters"/>
+    <evaluate expression="AddAuthnRequest"/>
+    <evaluate expression="PostRequestPopulateAuditContext"/>
+    <evaluate expression="WriteAuditLog"/>
+    <evaluate expression="'proceed'"/>
+    <transition on="proceed" to="EncodeSAMLRequest"/>
+  </action-state>
 
-    <action-state id="PostDiscovery">
-        <evaluate expression="InitializeProxyProfileRequestContext" />
-        <evaluate expression="FlowStartPopulateAuditContext" />
-        
-        <evaluate expression="PrepareInboundMessageContext" />
-        <evaluate expression="SAMLProtocolAndRole" />
-        <evaluate expression="SAMLMetadataLookup" />
+  <view-state id="EncodeSAMLRequest" view="externalRedirect:#{T(net.shibboleth.idp.authn.ExternalAuthentication).getExternalRedirect(flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.authn.SAML.externalAuthnPathStrategy').apply(opensamlProfileRequestContext) + '/start', flowExecutionContext.getKey().toString())}">
+    <attribute name="csrf_excluded" value="true" type="boolean"/>
+    <on-render>
+      <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).addSubcontext(new net.shibboleth.idp.authn.context.ExternalAuthenticationContext(new net.shibboleth.idp.authn.impl.ExternalAuthenticationImpl(false)), true).setFlowExecutionUrl(flowExecutionUrl + '&amp;_eventId_proceed=1')"/>
+      <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).addSubcontext(new net.shibboleth.idp.saml.saml2.profile.impl.SAMLAuthnContext(EncodeMessage, messageDecoderFactory), true)" result="flowScope.samlContext"/>
+      <evaluate expression="flowScope.samlContext.setOutboundMessageHandler(PreEncodeMessageHandler)"/>
+    </on-render>
+    <transition on="proceed" to="ProcessResponse"/>
+  </view-state>
 
-        <evaluate expression="InitializeRelyingPartyContextFromSAMLPeer" />
-        <evaluate expression="SelectRelyingPartyConfiguration" />
+  <action-state id="ProcessResponse">
+    <evaluate expression="ContinueSAMLAuthentication"/>
+    <evaluate expression="PopulateSignatureValidationParameters"/>
+    <evaluate expression="PopulateClientTLSValidationParameters"/>
+    <evaluate expression="PopulateInboundMessageContextWithSAMLSelf"/>
+    <evaluate expression="HandleResponse"/>
+    <evaluate expression="PopulateDecryptionParameters"/>
+    <evaluate expression="DecryptAssertions"/>
+    <evaluate expression="ValidateAssertions"/>
+    <evaluate expression="DecryptNameIDs"/>
+    <evaluate expression="DecryptAttributes"/>
+    <evaluate expression="ProcessAssertionsForAuthentication"/>
+    <evaluate expression="ValidateSAMLAuthenticationExt"/>
+    <evaluate expression="PostAssertionPopulateAuditContext"/>
+    <evaluate expression="PostResponsePopulateAuditContext"/>
+    <evaluate expression="PopulateSubjectCanonicalizationContext"/>
+    <evaluate expression="'proceed'"/>
+    <transition on="proceed" to="CallSubjectCanonicalization"/>
+    <on-exit>
+      <evaluate expression="WriteAuditLog"/>
+    </on-exit>
+  </action-state>
 
-        <evaluate expression="PostLookupPopulateAuditContext" />
-        
-        <evaluate expression="SelectProfileConfiguration" />
-        
-        <evaluate expression="InitializeOutboundMessageContext" />
-        <evaluate expression="InitializeMessageChannelSecurityContext" />
-        <evaluate expression="PopulateBindingAndEndpointContexts" />
+  <!-- This runs a c14n step on the result of the authentication. -->
+  <subflow-state id="CallSubjectCanonicalization" subflow="c14n">
+    <input name="calledAsSubflow" value="true"/>
+    <transition on="proceed" to="proceed"/>
+    <!-- This shouldn't generally happen, but if c14n fails, it's allowable to fall through. -->
+    <transition on="SubjectCanonicalizationError" to="ReselectFlow"/>
+  </subflow-state>
 
-        <evaluate expression="PopulateRequestSignatureSigningParameters" />
-        
-        <evaluate expression="AddAuthnRequest" />
-        <evaluate expression="PostRequestPopulateAuditContext" />
-        <evaluate expression="WriteAuditLog" />
-        <evaluate expression="'proceed'" />
-        
-        <transition on="proceed" to="EncodeSAMLRequest" />
-    </action-state>
-    
-    <view-state id="EncodeSAMLRequest" view="externalRedirect:#{T(net.shibboleth.idp.authn.ExternalAuthentication).getExternalRedirect(flowRequestContext.getActiveFlow().getApplicationContext().getBean('shibboleth.authn.SAML.externalAuthnPathStrategy').apply(opensamlProfileRequestContext) + '/start', flowExecutionContext.getKey().toString())}">
-        <attribute name="csrf_excluded" value="true" type="boolean"/>
-        <on-render>
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).addSubcontext(new net.shibboleth.idp.authn.context.ExternalAuthenticationContext(new net.shibboleth.idp.authn.impl.ExternalAuthenticationImpl(false)), true).setFlowExecutionUrl(flowExecutionUrl + '&amp;_eventId_proceed=1')" />
-            <evaluate expression="opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).addSubcontext(new net.shibboleth.idp.saml.saml2.profile.impl.SAMLAuthnContext(EncodeMessage, messageDecoderFactory), true)" result="flowScope.samlContext" />
-            <evaluate expression="flowScope.samlContext.setOutboundMessageHandler(PreEncodeMessageHandler)" />
-        </on-render>
+  <global-transitions>
+    <!-- Route everything out as a graceful failure to allow subsequent options to run. -->
+    <transition on="#{!'proceed'.equals(currentEvent.id)}" to="ReselectFlow">
+      <evaluate expression="T(org.opensaml.core.metrics.MetricsSupport).getMetricRegistry().counter('net.shibboleth.idp.authn.saml.failures').inc()"/>
+    </transition>
+  </global-transitions>
 
-        <transition on="proceed" to="ProcessResponse" />
-    </view-state>
-    
-    <action-state id="ProcessResponse">
-        <evaluate expression="ContinueSAMLAuthentication" />
-        <evaluate expression="PopulateSignatureValidationParameters" />
-        <evaluate expression="PopulateClientTLSValidationParameters" />
-        <evaluate expression="PopulateInboundMessageContextWithSAMLSelf" />
-        <evaluate expression="HandleResponse" />
-        <evaluate expression="PopulateDecryptionParameters" />
-        <evaluate expression="DecryptAssertions" />
-        <evaluate expression="ValidateAssertions" />
-        <evaluate expression="DecryptNameIDs" />
-        <evaluate expression="DecryptAttributes" />
-        <evaluate expression="ProcessAssertionsForAuthentication" />
-        <evaluate expression="ValidateSAMLAuthenticationExt" />
-        <evaluate expression="PostAssertionPopulateAuditContext" />
-        <evaluate expression="PostResponsePopulateAuditContext" />
-        <evaluate expression="PopulateSubjectCanonicalizationContext" />
-        <evaluate expression="'proceed'" />
-        
-        <transition on="proceed" to="CallSubjectCanonicalization" />
-        
-        <on-exit>
-	        <evaluate expression="WriteAuditLog" />
-        </on-exit>
-    </action-state>
-
-    <!-- This runs a c14n step on the result of the authentication. -->
-    <subflow-state id="CallSubjectCanonicalization" subflow="c14n">
-        <input name="calledAsSubflow" value="true" />
-        <transition on="proceed" to="proceed" />
-        
-        <!-- This shouldn't generally happen, but if c14n fails, it's allowable to fall through. -->
-        <transition on="SubjectCanonicalizationError" to="ReselectFlow" />
-    </subflow-state>
-
-    <global-transitions>
-        <!-- Route everything out as a graceful failure to allow subsequent options to run. -->
-        <transition on="#{!'proceed'.equals(currentEvent.id)}" to="ReselectFlow">
-            <evaluate expression="T(org.opensaml.core.metrics.MetricsSupport).getMetricRegistry().counter('net.shibboleth.idp.authn.saml.failures').inc()" />
-        </transition>
-    </global-transitions>
-    
-    <bean-import resource="classpath:/net/shibboleth/idp/flows/authn/saml-authn-beans.xml"/>
-    <bean-import resource="samlext-beans.xml"/>
+  <bean-import resource="classpath:/net/shibboleth/idp/flows/authn/saml-authn-beans.xml"/>
+  <bean-import resource="samlext-beans.xml"/>
 
 </flow>

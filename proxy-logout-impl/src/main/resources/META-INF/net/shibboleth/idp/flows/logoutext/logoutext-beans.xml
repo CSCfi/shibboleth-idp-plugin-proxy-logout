@@ -5,13 +5,14 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
-       default-init-method="initialize"
-       default-destroy-method="destroy">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd"
+       default-init-method="initialize" default-destroy-method="destroy">
 
-    <bean id="UpstreamSAML2SPSessionEntry"
-        class="fi.csc.shibboleth.idp.saml.session.impl.UpstreamSAML2SPSessionEntry" scope="prototype"/>
-    
+  <bean id="UpstreamSAML2SPSessionEntry" class="fi.csc.shibboleth.idp.saml.session.impl.UpstreamSAML2SPSessionEntry" scope="prototype"/>
+
 </beans>

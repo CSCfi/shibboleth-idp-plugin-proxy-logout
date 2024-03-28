@@ -2,19 +2,20 @@
 <!-- See LICENSE.txt file in the root directory of this repository for the 
     copyright/license information. -->
 <flow xmlns="http://www.springframework.org/schema/webflow"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
-          parent="intercept.abstract">
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+      parent="intercept.abstract">
 
-        <!-- Rudimentary impediment to direct execution of subflow. -->
-        <input name="calledAsSubflow" type="boolean" required="true" />
+  <!-- Rudimentary impediment to direct execution of subflow. -->
+  <input name="calledAsSubflow" type="boolean" required="true"/>
 
-        <action-state id="UpdateUpstreamIdPSessionAsSPSession">
-           <evaluate expression="UpdateUpstreamIdPSessionAsSPSession" />
-           <evaluate expression="'proceed'" />
-           <transition on="proceed" to="proceed" />
-        </action-state>
+  <action-state id="UpdateUpstreamIdPSessionAsSPSession">
+    <evaluate expression="UpdateUpstreamIdPSessionAsSPSession"/>
+    <evaluate expression="'proceed'"/>
+    <transition on="proceed" to="proceed"/>
+  </action-state>
 
-        <bean-import resource="track-idp-beans.xml" />
+  <bean-import resource="track-idp-beans.xml"/>
 
 </flow>
