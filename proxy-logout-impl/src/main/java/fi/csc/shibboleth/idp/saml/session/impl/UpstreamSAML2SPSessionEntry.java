@@ -28,7 +28,7 @@ public class UpstreamSAML2SPSessionEntry implements Function<LogoutContext, Stri
             log.trace("Searching for upstream session {}", entry.getKey());
             if (entry.getValue() instanceof SAML2SPSession) {
                 SAML2SPSession spSession = (SAML2SPSession) entry.getValue();
-                if (spSession.getACSLocation() == null || spSession.getACSLocation().isBlank()) {
+                if (SAML2SPSessionFromUpstreamIdPCreationStrategy.ACS.equals(spSession.getACSLocation())) {
                     log.trace("Located upstream session {}", entry.getKey());
                     return entry.getKey();
                 }
