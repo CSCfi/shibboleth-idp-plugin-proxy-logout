@@ -9,12 +9,12 @@
     <version>0.9.0</version>
   </parent>
   <name>Shibboleth IdP :: Plugins :: Proxy Logout Implementation</name>
-  <description>OAuth 2.0 Device Authorization Grant plugin implementation.</description>
+  <description>Proxy Logout plugin implementation.</description>
   <artifactId>proxy-logout-impl</artifactId>
   <packaging>jar</packaging>
   <properties>
     <checkstyle.configLocation>${project.basedir}/../checkstyle.xml</checkstyle.configLocation>
-    <automatic.module.name>fi.csc.shibboleth.plugin.oauth2.devicegrant.impl</automatic.module.name>
+    <automatic.module.name>fi.csc.shibboleth.plugin.proxy.logout.impl</automatic.module.name>
   </properties>
   <dependencies>
     <dependency>
