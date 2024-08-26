@@ -6,7 +6,7 @@
   <parent>
     <groupId>fi.csc.shibboleth.plugin.proxy.logout</groupId>
     <artifactId>idp-plugin-proxy-logout</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
   </parent>
   <name>Shibboleth IdP :: Plugins :: Proxy Logout Implementation</name>
   <description>Proxy Logout plugin implementation.</description>
