@@ -42,7 +42,7 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
     /** Class logger. */
     @Nonnull
     private final Logger log = LoggerFactory.getLogger(SAML2SPSessionFromUpstreamIdPCreationStrategy.class);
-    
+
     public final static String ACS = "https://SAML2SPSessionFromUpstreamIdPCreationStrategy.acs";
 
     /** Lifetime of sessions to create. */
@@ -66,7 +66,7 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
         assert input != null;
         SubjectContext subjectCtx = input.getSubcontext(SubjectContext.class);
         if (subjectCtx == null) {
-            log.debug("No SubjectContext, no SAML2SPSession created");
+            log.warn("No SubjectContext, no SAML2SPSession created  for upstream IdP");
             return null;
         }
         NameID nameID = null;
@@ -79,12 +79,16 @@ public class SAML2SPSessionFromUpstreamIdPCreationStrategy implements Function<P
             break;
         }
         if (nameID == null) {
-            log.debug("No NameIDPrincipal in SubjectContext, no SAML2SPSession created");
+            log.warn("No NameIDPrincipal in SubjectContext, no SAML2SPSession created for upstream IdP");
+            return null;
+        }
+        if (nameID.getNameQualifier() == null) {
+            log.warn("No NameQualifier in NameIDPrincipal, no SAML2SPSession created for upstream IdP");
             return null;
         }
         String sessionIndex = nameID.getSPProvidedID();
         if (sessionIndex == null) {
-            log.debug("No session index avalaible, no SAML2SPSession created for upstream IdP.");
+            log.warn("No session index avalaible, no SAML2SPSession created for upstream IdP");
             return null;
         }
         // We clear it before creating a SP Session.
