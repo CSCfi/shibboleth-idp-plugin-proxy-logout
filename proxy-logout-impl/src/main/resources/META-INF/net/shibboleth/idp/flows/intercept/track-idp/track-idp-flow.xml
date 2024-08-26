@@ -16,6 +16,12 @@
     <transition on="proceed" to="proceed"/>
   </action-state>
 
+  <!-- All known errors are ignored. -->
+  <global-transitions>
+    <transition on-exception="java.lang.RuntimeException" to="proceed" />
+    <transition on="#{!'proceed'.equals(currentEvent.id)}" to="proceed" />
+  </global-transitions>
+
   <bean-import resource="track-idp-beans.xml"/>
 
 </flow>
