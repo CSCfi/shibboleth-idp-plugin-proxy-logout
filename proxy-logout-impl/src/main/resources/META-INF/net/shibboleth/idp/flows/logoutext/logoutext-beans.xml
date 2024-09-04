@@ -13,6 +13,12 @@
                            http://www.springframework.org/schema/util/spring-util.xsd"
        default-init-method="initialize" default-destroy-method="destroy">
 
+  <bean id="StoreContextPath"
+        class="fi.csc.shibboleth.idp.saml.saml2.profile.impl.StoreContextPath" scope="prototype"
+        p:contextPathParameter = "%{proxylogout.postLogoutRedirectUrlContextPathParameter:context_path}"
+        p:baseUrl = "%{proxylogout.postLogoutRedirectBaseUrl:#{null}}"
+        p:httpServletRequestSupplier-ref="shibboleth.HttpServletRequestSupplier" />
+
   <bean id="UpstreamSAML2SPSessionEntry" class="fi.csc.shibboleth.idp.saml.session.impl.UpstreamSAML2SPSessionEntry" scope="prototype"/>
 
 </beans>
