@@ -22,7 +22,7 @@
       <artifactId>proxy-logout-api</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
-    </dependency>      
+    </dependency>
     <!-- provided dependencies -->
     <dependency>
       <groupId>${slf4j.groupId}</groupId>

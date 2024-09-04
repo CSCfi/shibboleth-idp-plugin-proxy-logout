@@ -34,6 +34,18 @@
             </excludes>
         </fileSet>
         <fileSet>
+            <directory>../proxy-logout-dist/target/dependency</directory>
+            <outputDirectory>webapp/WEB-INF/lib</outputDirectory>
+            <includes>
+                <include>logstash-logback-encoder-*.jar</include>
+            </includes>
+            <excludes>
+                <exclude>*test*.jar</exclude>
+                <exclude>*javadoc.jar</exclude>
+                <exclude>*sources.jar</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
             <directory>src/main/resources/webapp</directory>
             <outputDirectory>webapp</outputDirectory>
         </fileSet>
