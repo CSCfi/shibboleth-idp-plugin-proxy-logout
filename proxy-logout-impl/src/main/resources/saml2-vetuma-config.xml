@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLTooling xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vet="urn:vetuma:SAML:2.0:extensions" xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol" xmlns="http://www.opensaml.org/xmltooling-config" xsi:schemaLocation="http://www.opensaml.org/xmltooling-config ../../src/schema/xmltooling-config.xsd">
+
+    <ObjectProviders>
+
+        <ObjectProvider qualifiedName="vet:vetuma">
+            <BuilderClass className="fi.csc.saml.ext.vetuma.impl.VetumaExtensionBuilder"/>
+            <MarshallingClass className="fi.csc.saml.ext.vetuma.impl.VetumaExtensionMarshaller"/>
+            <UnmarshallingClass className="fi.csc.saml.ext.vetuma.impl.VetumaExtensionUnmarshaller"/>
+        </ObjectProvider>
+
+    </ObjectProviders>
+    
+</XMLTooling>

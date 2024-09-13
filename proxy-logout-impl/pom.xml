@@ -65,6 +65,11 @@
       <artifactId>idp-testing</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>${opensaml.groupId}</groupId>
+      <artifactId>opensaml-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

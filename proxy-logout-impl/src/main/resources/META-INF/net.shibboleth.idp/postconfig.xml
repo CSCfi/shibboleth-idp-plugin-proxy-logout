@@ -15,6 +15,9 @@
     <bean id="shibboleth.PropertySourcesPlaceholderConfigurer"
         class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"
         p:placeholderPrefix="%{" p:placeholderSuffix="}" />
+        
+    <bean id="proxylogout.SAMLAuthnPOSTController" class="fi.csc.shibboleth.idp.saml.saml2.profile.impl.SAMLAuthnController"
+        p:inboundBindings-ref="shibboleth.OutgoingSAML2SSOBindings" />
 
     <!-- Interceptor bean definition. -->
     <bean id="intercept/track-idp" parent="shibboleth.InterceptFlow" />
