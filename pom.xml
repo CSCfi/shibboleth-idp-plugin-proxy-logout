@@ -52,12 +52,6 @@
         <version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder -->
-      <dependency>
-        <groupId>net.logstash.logback</groupId>
-        <artifactId>logstash-logback-encoder</artifactId>
-        <version>8.0</version>
-      </dependency>
       <!-- provided dependencies -->
       <dependency>
         <groupId>${slf4j.groupId}</groupId>
