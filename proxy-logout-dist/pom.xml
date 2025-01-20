@@ -17,32 +17,8 @@
     <dist.finalName>shibboleth-idp-plugin-proxy-logout-${project.version}</dist.finalName>
     <dist.assemblyDirectory>${project.build.directory}/${dist.finalName}</dist.assemblyDirectory>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-    </dependency>
-  </dependencies>    
   <build>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>copy-dependencies</id>
-              <phase>package</phase>
-              <goals>
-                <goal>copy-dependencies</goal>
-              </goals>
-              <configuration>
-                <outputDirectory>${project.target.directory}</outputDirectory>
-                <includeScope>runtime</includeScope>
-                <excludeTransitive>true</excludeTransitive>
-              </configuration>
-            </execution>
-          </executions>
-      </plugin>         
       <!-- Copy src/main/resources to assembly directory. -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
