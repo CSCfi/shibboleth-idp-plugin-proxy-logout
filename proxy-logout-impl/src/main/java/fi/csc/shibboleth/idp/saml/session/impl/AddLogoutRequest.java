@@ -101,7 +101,7 @@ public class AddLogoutRequest extends AbstractProfileAction {
     /** EntityID to populate into Issuer element. */
     @Nullable private String issuerId;
     
-    @Value("%{proxylogout.vetumaRegExp:https://testi.apro.tunnistus.fi/idp1|https://tunnistautuminen.suomi.fi/idp1}")
+    @Value("%{proxylogout.logout.vetumaRegExp:https://testi.apro.tunnistus.fi/idp1|https://tunnistautuminen.suomi.fi/idp1}")
     private String vetumaRegExp;
 
     @Value("#{%{proxylogout.vetumaLocales:{'fi','sv','en','FI','SV','EN'}}}")
