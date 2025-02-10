@@ -40,7 +40,7 @@
 
   <bean id="BestMatchCriterionLookupStrategy" class="net.shibboleth.idp.saml.session.impl.BestMatchLocationLookupStrategy"/>
 
-  <bean id="AddLogoutRequest" class="net.shibboleth.idp.saml.session.impl.AddLogoutRequest" scope="prototype" p:overwriteExisting="true" p:issuerLookupStrategy-ref="shibboleth.IssuerLookup.Simple">
+  <bean id="AddLogoutRequest" class="fi.csc.shibboleth.idp.saml.session.impl.AddLogoutRequest" scope="prototype" p:overwriteExisting="true" p:issuerLookupStrategy-ref="shibboleth.IssuerLookup.Simple" p:httpServletRequestSupplier-ref="shibboleth.HttpServletRequestSupplier">
     <property name="identifierGeneratorLookupStrategy">
       <bean class="net.shibboleth.profile.config.navigate.IdentifierGenerationStrategyLookupFunction" p:defaultIdentifierGenerationStrategy-ref="shibboleth.DefaultIdentifierGenerationStrategy"/>
     </property>
